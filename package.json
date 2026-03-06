@@ -2,6 +2,13 @@
   "name": "jonathan-crm",
   "private": true,
   "scripts": {
-    "dev": "npx serve . -l 3000 --cors"
+    "start": "serve . -l 3000 --cors",
+    "dev": "serve . -l 3000 --cors"
+  },
+  "dependencies": {
+    "serve": "^14.2.4"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

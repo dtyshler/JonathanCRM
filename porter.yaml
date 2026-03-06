@@ -2,16 +2,19 @@ version: v2
 name: jonathan-crm
 
 build:
-  method: docker
+  method: pack
   context: .
-  dockerfile: ./Dockerfile
+  builder: heroku/builder:22
+  buildpacks:
+    - heroku/nodejs
 
 services:
   - name: web
     type: web
-    port: 80
+    run: npm start
+    port: 3000
     cpuCores: 0.1
-    ramMegabytes: 128
+    ramMegabytes: 256
     autoscaling:
       enabled: false
     instances: 1
