@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jonathan CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- ═══ AUTH SCREEN ═══════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-mark">J</div>
+      <div class="auth-brand-name">Jonathan CRM</div>
+    </div>
+    <div id="auth-login-view">
+      <h1 class="auth-heading">Welcome back</h1>
+      <p class="auth-sub">Sign in to continue to your CRM</p>
+      <form class="auth-form" id="login-form" onsubmit="return false;">
+        <div class="auth-field">
+          <label>Email</label>
+          <input type="email" id="login-email" placeholder="you@company.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password">
+        </div>
+        <div class="auth-error" id="login-error"></div>
+        <button class="auth-btn" id="login-btn" onclick="handleSignIn()">Sign in</button>
+      </form>
+      <div class="auth-switch">No account yet? <a onclick="toggleAuth('signup')">Create one</a></div>
+    </div>
+    <div id="auth-signup-view" style="display:none;">
+      <h1 class="auth-heading">Create account</h1>
+      <p class="auth-sub">Get started with Jonathan CRM</p>
+      <form class="auth-form" id="signup-form" onsubmit="return false;">
+        <div class="auth-field">
+          <label>Full name</label>
+          <input type="text" id="signup-name" placeholder="Jonathan Smith">
+        </div>
+        <div class="auth-field">
+          <label>Email</label>
+          <input type="email" id="signup-email" placeholder="you@company.com" autocomplete="email">
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <input type="password" id="signup-password" placeholder="Min 6 characters" autocomplete="new-password">
+        </div>
+        <div class="auth-error" id="signup-error"></div>
+        <button class="auth-btn" id="signup-btn" onclick="handleSignUp()">Create account</button>
+      </form>
+      <div class="auth-switch">Already have an account? <a onclick="toggleAuth('login')">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP SHELL ════════════════════════════════════════ -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">J</div>
+      <span class="brand-name">Jonathan CRM</span>
+    </div>
+    <div class="sidebar-section">Menu</div>
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-page="dashboard" onclick="navigate('dashboard')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-btn" data-page="deals" onclick="navigate('deals')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span>Deals</span>
+        <span class="nav-count" id="nav-deals-count"></span>
+      </button>
+      <button class="nav-btn" data-page="contacts" onclick="navigate('contacts')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Contacts</span>
+        <span class="nav-count" id="nav-contacts-count"></span>
+      </button>
+      <button class="nav-btn" data-page="activities" onclick="navigate('activities')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span>Activities</span>
+        <span class="nav-count warn" id="nav-activities-count"></span>
+      </button>
+      <button class="nav-btn" data-page="reports" onclick="navigate('reports')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span>Reports</span>
+      </button>
+    </nav>
+    <div class="sidebar-spacer"></div>
+    <nav class="sidebar-nav">
+      <button class="nav-btn" data-page="settings" onclick="navigate('settings')">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+    <div class="sidebar-user" onclick="handleSignOut()" title="Sign out">
+      <div class="user-avatar-sm" id="sidebar-avatar">J</div>
+      <div class="user-meta">
+        <div class="user-name" id="sidebar-name">User</div>
+        <div class="user-email-text" id="sidebar-email"></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <header class="topbar">
+      <h1 class="topbar-title" id="topbar-title">Dashboard</h1>
+      <div class="topbar-search">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Search or jump to... (⌘K)" id="global-search" onfocus="openCmdPalette()" readonly>
+      </div>
+      <div class="topbar-right">
+        <button class="btn btn-sm btn-ghost" onclick="openCmdPalette()" title="⌘K">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ═══ PAGE: DASHBOARD ════════════════════════════ -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-body" id="dashboard-body">
+        <div class="loading-center"><div class="spinner"></div> Loading dashboard...</div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE: DEALS ═══════════════════════════════ -->
+    <div id="page-deals" class="page">
+      <div class="page-toolbar">
+        <div class="view-toggles">
+          <button class="vt active" data-view="kanban" onclick="setDealsView('kanban')">Board</button>
+          <button class="vt" data-view="list" onclick="setDealsView('list')">List</button>
+        </div>
+        <span class="text-sm text-muted" id="deals-meta"></span>
+        <div class="toolbar-spacer"></div>
+        <div class="search-inline">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" placeholder="Search deals..." id="deals-search" oninput="renderDeals()">
+        </div>
+        <select class="form-select" id="deals-filter-stage" onchange="renderDeals()" style="width:150px;height:32px;font-size:12px;">
+          <option value="">All stages</option>
+        </select>
+        <select class="form-select" id="deals-filter-label" onchange="renderDeals()" style="width:120px;height:32px;font-size:12px;">
+          <option value="">All labels</option>
+          <option>Hot</option><option>Warm</option><option>Cold</option><option>Follow-up</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="openDealModal()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Deal
+        </button>
+      </div>
+      <div id="page-deals-body" style="flex:1;overflow:hidden;display:flex;">
+        <div id="deals-kanban" class="board"></div>
+        <div id="deals-list" class="data-table-wrap" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ═══ PAGE: CONTACTS ════════════════════════════ -->
+    <div id="page-contacts" class="page">
+      <div class="page-toolbar">
+        <span class="text-sm text-muted" id="contacts-meta"></span>
+        <div class="toolbar-spacer"></div>
+        <div class="search-inline">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" placeholder="Search contacts..." id="contacts-search" oninput="renderContacts()">
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openContactModal()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Contact
+        </button>
+      </div>
+      <div class="page-body" id="contacts-body"></div>
+    </div>
+
+    <!-- ═══ PAGE: ACTIVITIES ══════════════════════════ -->
+    <div id="page-activities" class="page">
+      <div class="page-toolbar">
+        <div class="activity-filters" id="activity-filters">
+          <button class="af active" data-filter="all" onclick="setActivityFilter('all')">All</button>
+          <button class="af" data-filter="today" onclick="setActivityFilter('today')">Today</button>
+          <button class="af" data-filter="upcoming" onclick="setActivityFilter('upcoming')">Upcoming</button>
+          <button class="af" data-filter="overdue" onclick="setActivityFilter('overdue')">Overdue</button>
+          <button class="af" data-filter="completed" onclick="setActivityFilter('completed')">Done</button>
+        </div>
+        <span class="text-sm text-muted" id="activities-meta"></span>
+        <div class="toolbar-spacer"></div>
+        <button class="btn btn-primary btn-sm" onclick="openActivityModal()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+          Activity
+        </button>
+      </div>
+      <div class="page-body" id="activities-body"></div>
+    </div>
+
+    <!-- ═══ PAGE: REPORTS ═════════════════════════════ -->
+    <div id="page-reports" class="page">
+      <div class="page-body" id="reports-body"></div>
+    </div>
+
+    <!-- ═══ PAGE: SETTINGS ════════════════════════════ -->
+    <div id="page-settings" class="page">
+      <div class="page-body" id="settings-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODALS ═══════════════════════════════════════════ -->
+
+<!-- Deal Modal -->
+<div class="modal-backdrop" id="modal-deal" onclick="if(event.target===this)closeDealModal()">
+  <div class="modal" style="width:720px;">
+    <div class="modal-header">
+      <div class="modal-title" id="deal-modal-title">New Deal</div>
+      <button class="modal-close" onclick="closeDealModal()">&times;</button>
+    </div>
+    <div class="modal-body-split">
+      <div class="modal-body-main">
+        <div class="form-group">
+          <label class="form-label">Title</label>
+          <input class="form-input" type="text" id="deal-title" placeholder="Deal name">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Contact Person</label>
+            <input class="form-input" type="text" id="deal-contact" placeholder="Contact name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Organization</label>
+            <input class="form-input" type="text" id="deal-org" placeholder="Company">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Value</label>
+            <input class="form-input" type="number" id="deal-value" placeholder="0" min="0" style="font-family:var(--mono);">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Currency</label>
+            <select class="form-select" id="deal-currency">
+              <option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="CAD">CAD</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pipeline Stage</label>
+          <div class="stage-track" id="deal-stage-track"></div>
+          <div class="stage-label-text" id="deal-stage-label">Qualified</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Label</label>
+            <select class="form-select" id="deal-label">
+              <option value="">None</option><option>Hot</option><option>Warm</option><option>Cold</option><option>Follow-up</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Probability %</label>
+            <input class="form-input" type="number" id="deal-prob" min="0" max="100" placeholder="0" style="font-family:var(--mono);">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Expected Close</label>
+            <input class="form-input" type="date" id="deal-close">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Source</label>
+            <select class="form-select" id="deal-source">
+              <option value="">—</option><option>Email</option><option>Phone</option><option>Referral</option><option>Website</option><option>LinkedIn</option><option>Cold Outreach</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" id="deal-notes" placeholder="Add notes about this deal..."></textarea>
+        </div>
+      </div>
+      <div class="modal-body-side">
+        <div class="section-label">Contact Info</div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" type="tel" id="deal-phone" placeholder="Phone">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="deal-email" placeholder="Email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Visible to</label>
+          <select class="form-select" id="deal-visible">
+            <option>Only me</option><option>All users</option><option>My team</option>
+          </select>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);" id="deal-created-wrap" class="hidden">
+          <div class="section-label">Created</div>
+          <div class="text-sm text-muted" id="deal-created-at">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button class="btn btn-danger btn-sm" id="deal-delete-btn" onclick="deleteDeal()" style="display:none;">Delete</button>
+      </div>
+      <div class="modal-footer-right">
+        <button class="btn" onclick="closeDealModal()">Cancel</button>
+        <button class="btn btn-primary" id="deal-save-btn" onclick="saveDeal()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Modal -->
+<div class="modal-backdrop" id="modal-contact" onclick="if(event.target===this)closeContactModal()">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div class="modal-title" id="contact-modal-title">New Contact</div>
+      <button class="modal-close" onclick="closeContactModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-input" type="text" id="contact-name" placeholder="Full name">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" id="contact-email" placeholder="Email">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone</label>
+          <input class="form-input" type="tel" id="contact-phone" placeholder="Phone">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Company</label>
+          <input class="form-input" type="text" id="contact-company" placeholder="Company name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <input class="form-input" type="text" id="contact-role" placeholder="Job title">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Label</label>
+        <select class="form-select" id="contact-label">
+          <option value="">None</option><option>Customer</option><option>Prospect</option><option>Partner</option><option>Vendor</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="contact-notes" placeholder="Notes..." rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button class="btn btn-danger btn-sm" id="contact-delete-btn" onclick="deleteContact()" style="display:none;">Delete</button>
+      </div>
+      <div class="modal-footer-right">
+        <button class="btn" onclick="closeContactModal()">Cancel</button>
+        <button class="btn btn-primary" id="contact-save-btn" onclick="saveContact()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Activity Modal -->
+<div class="modal-backdrop" id="modal-activity" onclick="if(event.target===this)closeActivityModal()">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <div class="modal-title" id="activity-modal-title">New Activity</div>
+      <button class="modal-close" onclick="closeActivityModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select class="form-select" id="activity-type">
+            <option value="task">Task</option><option value="call">Call</option><option value="email">Email</option><option value="meeting">Meeting</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select class="form-select" id="activity-priority">
+            <option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input class="form-input" type="text" id="activity-title" placeholder="Activity title">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="activity-desc" placeholder="Description..." rows="2"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Due Date</label>
+        <input class="form-input" type="datetime-local" id="activity-due">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Linked Deal</label>
+          <select class="form-select" id="activity-deal"><option value="">None</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Linked Contact</label>
+          <select class="form-select" id="activity-contact-link"><option value="">None</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button class="btn btn-danger btn-sm" id="activity-delete-btn" onclick="deleteActivity()" style="display:none;">Delete</button>
+      </div>
+      <div class="modal-footer-right">
+        <button class="btn" onclick="closeActivityModal()">Cancel</button>
+        <button class="btn btn-primary" id="activity-save-btn" onclick="saveActivity()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Command Palette -->
+<div class="modal-backdrop" id="cmd-palette" onclick="if(event.target===this)closeCmdPalette()">
+  <div class="cmd-box">
+    <div class="cmd-input-wrap">
+      <input type="text" id="cmd-input" placeholder="Search deals, contacts, or type a command..." oninput="filterCmdResults()">
+    </div>
+    <div class="cmd-results" id="cmd-results"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+export const S = {
+  user: null,
+  page: 'dashboard',
+  deals: [],
+  contacts: [],
+  activities: [],
+  dealsView: 'kanban',
+  activityFilter: 'all',
+  dealsSortField: 'created_at',
+  dealsSortDir: 'desc',
+  editingDealId: null,
+  editingContactId: null,
+  editingActivityId: null,
+  dealStageIdx: 0,
+  dragSrcId: null,
+  tablesAvailable: { contacts: false, activities: false },
+};
